@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-gradient: linear-gradient(90deg, #FF4B2B 0%, #FF9A5A 100%);
+  --input-bg: #F5F5F5;
+  --text-color: #333333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Alexandria', sans-serif;
+}
+
+body {
+  background-color: #FFFFFF;
+} 
