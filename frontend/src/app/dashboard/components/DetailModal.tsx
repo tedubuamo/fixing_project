@@ -514,6 +514,7 @@ export function DetailModal({
                   {/* Form responsive */}
                   <form onSubmit={handleSubmit(async (data) => {
                     try {
+                      console.log('⏳ Submitting evidence...')
                       setIsSubmitting(true)
                       
                       // Validasi file wajib
@@ -532,45 +533,67 @@ export function DetailModal({
                       const fileName = `${Math.random()}.${fileExt}`
                       const filePath = `${user?.id}/${fileName}`
 
+                      const formData = new FormData();
+                      formData.append('file', data.image[0]); // Attach file
+                      formData.append('description', data.description);
+                      formData.append('amount_used', amount.replace(/[^\d.]/g, '')); // Clean number format
+                      formData.append('id_user', user?.id?.toString() || '');
+                      formData.append('id_poin', selectedPoin.id);
+                      formData.append('time', new Date().toISOString());
+
                       // Upload ke Supabase Storage
-                      const { error: uploadError, data: uploadData } = await supabase
-                        .storage
-                        .from('images')
-                        .upload(filePath, file)
+                      // const { error: uploadError, data: uploadData } = await supabase
+                      //   .storage
+                      //   .from('images')
+                      //   .upload(filePath, file)
 
-                      if (uploadError) throw uploadError
+                      // if (uploadError) throw uploadError
 
-                      // Dapatkan public URL
-                      const { data: { publicUrl } } = supabase
-                        .storage
-                        .from('images')
-                        .getPublicUrl(filePath)
+                      // // Dapatkan public URL
+                      // const { data: { publicUrl } } = supabase
+                      //   .storage
+                      //   .from('images')
+                      //   .getPublicUrl(filePath)
 
-                      imageUrl = publicUrl
-                      setIsUploading(false)
+                      // imageUrl = publicUrl
+                      // setIsUploading(false)
 
                       // Perbaiki format amount sebelum dikirim ke API
-                      const cleanAmount = amount.replace(/\D/g, '')
+                      // const cleanAmount = amount.replace(/\D/g, '')
                       
-                      // Submit report dengan image URL
-                      const response = await fetch('/api/reports/create', {
+                      // // Submit report dengan image URL
+                      // const response = await fetch('/api/reports/create', {
+                      //   method: 'POST',
+                      //   headers: {
+                      //     'Content-Type': 'application/json',
+                      //   },
+                      //   body: JSON.stringify({
+                      //     description: data.description,
+                      //     amount_used: parseInt(cleanAmount),
+                      //     image_url: imageUrl,
+                      //     id_user: user?.id,
+                      //     id_poin: selectedPoin.id,
+                      //     time: new Date().toISOString()
+                      //   }),
+                      // })
+
+                      const response = await fetch('http://localhost:8000/api/report/create/', {
                         method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                          description: data.description,
-                          amount_used: parseInt(cleanAmount),
-                          image_url: imageUrl,
-                          id_user: user?.id,
-                          id_poin: selectedPoin.id,
-                          time: new Date().toISOString()
-                        }),
+                        body: formData
                       })
 
                       if (!response.ok) {
-                        throw new Error('Failed to submit report')
+                        console.log(response)
+                        throw new Error(`Failed to submit report`)
                       }
+
+                      if (!user?.id || !selectedPoin?.id || !data.description || !amount) {
+                        toast.error('Semua field wajib diisi');
+                        return;
+                      }
+
+                      const respon = await response.json();
+                      console.log(respon)
 
                       reset()
                       onDataUpdate?.()
@@ -578,9 +601,11 @@ export function DetailModal({
                       onClose()
                       
                     } catch (error) {
-                      console.error('Submit error:', error)
+                      console.error('❌ Submit error:', error)
                       toast.error('Gagal menambahkan evidence')
+                      setIsSubmitting(false)
                     } finally {
+                      console.log('✅ Submit successful')
                       setIsSubmitting(false)
                     }
                   })} className="space-y-4">
