@@ -1,2 +1,6 @@
 frontend/node_modules
 .qodo
+backend/.env
+backend/.env.*
+frontent/.env
+frontend/.env.*
