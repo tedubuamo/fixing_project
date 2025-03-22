@@ -147,7 +147,7 @@ def create_report(request):
         timestamp = int(time.time() * 1000)
         file_ext = Path(image_file.name).suffix.lower()
         file_name = f"{timestamp}{file_ext}"
-        file_path = f"upload/{file_name}"
+        file_path = f"media/upload/{file_name}"
 
         saved_path = default_storage.save(file_path, image_file)
         file_url = default_storage.url(saved_path)

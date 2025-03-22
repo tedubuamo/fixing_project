@@ -481,11 +481,11 @@ export function DetailModal({
                               </td>
                               <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <button
-                                  onClick={() => window.open(report.image_url, '_blank')}
+                                  onClick={() => window.open(`${ process.env.NEXT_PUBLIC_API_URL }${ report.image_url }`, '_blank')}
                                   className="text-orange-600 hover:text-orange-900"
                                 >
                                   Lihat
-                                </button>
+                                </button> 
                               </td>
                               <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <button

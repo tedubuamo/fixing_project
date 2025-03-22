@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .views.user_registry import user_login, user_register, get_csrf_token, send_otp, check_status
 from .views.user_overview import user_overview
 from .views.user_cluster_evidence import user_cluster_evidence
@@ -136,3 +138,6 @@ urlpatterns = [
     
     path('api/show-image', get_image, name='get_image'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
